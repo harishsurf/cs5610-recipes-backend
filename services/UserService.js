@@ -4,11 +4,14 @@ const AdminUserModel = require('../models/AdminUser.model');
 const AuthorUserModel = require('../models/AuthorUser.model');
 
 addUser = async (user) => {
-    let newUser = new UserModel({
+    const newUser = new UserModel({
         ...user,
     });
     const addedUser = await newUser.save();
-    let newBrowsingUser = new BrowsingUserModel({
+    if(!addedUser._id) {
+        return null;
+    }
+    const newBrowsingUser = new BrowsingUserModel({
         user: addedUser._id
     });
     const newUserAdded = {
@@ -20,11 +23,14 @@ addUser = async (user) => {
 }
 
 addAdminUser = async (user) => {
-    let newUser = new UserModel({
+    const newUser = new UserModel({
         ...user,
     });
     const addedUser = await newUser.save();
-    let newBrowsingUser = new AdminUserModel({
+    if(!addedUser._id) {
+        return null;
+    }
+    const newBrowsingUser = new AdminUserModel({
         user: addedUser._id
     });
     newBrowsingUser.save();
@@ -35,11 +41,8 @@ findAllUsers = async (_id) => {
     const adminUser = await AdminUserModel.findOne({
         user: _id,
     });
-    console.log(adminUser);
-    console.log("Admin User Id", _id);
     if(adminUser) {
         const allUsers = await UserModel.find();
-        console.log('All Users:',allUsers);
         return allUsers;
     }
     return null;
@@ -138,6 +141,9 @@ findUserById = async (_id) => {
     const user = await UserModel.findOne({
         _id: _id,
     });
+    if(!user) {
+        return null;
+    }
     const browsingUser = await BrowsingUserModel.findOne({
         user: user._id,
     });
