@@ -1,12 +1,16 @@
-const daoObj = require('../daos/dao');
+const daoObj = require('../services/dao');
 
 module.exports = function(app) {
 
     // USER CONTROLLER
     app.post('/api/recipes', (req, res) => {
-        daoObj.createRecipe(req)
+        console.log(req);
+        daoObj.createRecipe(req.body)
             .then(actualRecipe => {
                 res.json(actualRecipe);
+            })
+            .catch(error => {
+                console.log(error);
             })
     });
 
