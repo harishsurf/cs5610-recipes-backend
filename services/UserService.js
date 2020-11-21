@@ -60,12 +60,14 @@ updateUser = async (userId, updatedUser) => {
 }
 
 updateUserRole = async (requestingUser, userId, type) => {
-    const adminUser = await UserModel.findById(requestingUser);
-    await BrowsingUserModel.findOneAndDelete({user: userId});
-    await AdminUserModel.findOneAndDelete({user: userId});
-    await AuthorUserModel.findOneAndDelete({user: userId});
+    const adminUser = AdminUserModel.find({
+        user: requestingUser,
+    });
     let updatedRecord;
     if(adminUser) {
+        await BrowsingUserModel.findOneAndDelete({user: userId});
+        await AdminUserModel.findOneAndDelete({user: userId});
+        await AuthorUserModel.findOneAndDelete({user: userId});
         switch(type) {
             case 'AUTHOR':
                 updatedRecord = new AuthorUserModel({
@@ -85,14 +87,13 @@ updateUserRole = async (requestingUser, userId, type) => {
             default:
                 updatedRecord = null;
         }
+        
+        await updatedRecord.save();
+        const finalUser = await this.findUserById(userId);
+        return finalUser;
+    } else {
+        return null;
     }
-    if(updatedRecord) {
-        const newUser = await updatedRecord.save();
-        if(newUser) {
-            return newUser._doc;
-        }
-    }
-    return null;
 }
 
 validateUser = async (username, password) => {
@@ -100,6 +101,9 @@ validateUser = async (username, password) => {
         'username': username,
         'password': password
     });
+    if(!user) {
+        return null;
+    }
     const browsingUser = await BrowsingUserModel.findOne({
         user: user._id,
     });
