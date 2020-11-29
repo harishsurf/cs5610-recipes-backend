@@ -19,6 +19,12 @@ app.use(function (req, res, next) {
     next();
 });
 
+const controller = require('./controller/controller');
+const userController = require('./controller/UserController');
+
+controller(app);
+userController(app);
+
 // Create a listener for the port
 app.listen(4000, () => {
     console.log('Now starting at port: 4000');
