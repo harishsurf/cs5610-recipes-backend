@@ -6,15 +6,25 @@ module.exports = function (app) {
         UserService.addUser(user).then(newUser => {
             console.log(newUser);
             res.json(newUser);
+        })
+        .catch(data => {
+            res.status(500).send({
+                error: "Internal server problem",
+            });
         });
-    })
+    });
 
     app.post('/api/users/admin', (req, res) => {
         const user = req.body;
+        console.log(user);
         UserService.addAdminUser(user).then(newUser => {
             res.json(newUser);
+        }).catch(data => {
+            res.status(500).send({
+                error: "Cannot create user."
+            });
         });
-    })
+    });
 
     app.post('/api/users/validate', (req, res) => {
         const username = req.body.username;
@@ -27,7 +37,11 @@ module.exports = function (app) {
             res.status(401).send({
                 error: "Incorrect credentials"
             });
-        })
+        }).catch(data => {
+            res.status(500).send({
+                error: "Incorrect credentials"
+            });
+        });
     });
 
     app.get('/api/users/all/:userId', (req, res) => {
@@ -37,10 +51,14 @@ module.exports = function (app) {
                 res.json(users);
                 return;
             }
-            res.status(401).send({
-                error: "Incorrect credentials"
+            res.status(500).send({
+                error: "Internal Server error"
             });
-        })
+        }).catch(data => {
+            res.status(500).send({
+                error: "Internal server error"
+            });
+        });
     });
 
     app.get('/api/users/:userId', (req, res) => {
@@ -50,10 +68,14 @@ module.exports = function (app) {
                 res.json(users);
                 return;
             }
-            res.status(401).send({
+            res.status(500).send({
                 error: "Cannot fetch User"
             });
-        })
+        }).catch(data => {
+            res.status(500).send({
+                error: "Cannot fetch User"
+            });
+        });
     });
 
     app.put('/api/users/:userId', (req,res) => {
@@ -61,13 +83,20 @@ module.exports = function (app) {
         const updatedUser = req.body;
         UserService.updateUser(userId, updatedUser).then(status => {
             if(status === 1) {
-                res.json(updatedUser);
+                UserService.findUserById(updatedUser._id)
+                    .then(user => res.json(user));
+
+                // res.json(updatedUser);
                 return;
             }
             res.status(500).send({
                 error: "Cannot update user",
             })
-        })
+        }).catch( data => { 
+            res.status(500).send({
+                error: "Cannot update user",
+            });
+        });
     });
 
     app.put('/api/users/:userId/role', (req,res) => {
@@ -82,7 +111,11 @@ module.exports = function (app) {
             res.status(500).send({
                 error: "Cannot update user",
             })
-        })
+        }).catch( data => { 
+            res.status(500).send({
+                error: "Cannot update user",
+            });
+        });
     });
 
     app.delete('/api/users/:userId', (req,res) => {
@@ -94,6 +127,10 @@ module.exports = function (app) {
             }
             res.status(500).send({
                 error: "Cannot delete User.",
+            });
+        }).catch( data => {
+            res.status(500).send({
+                error: "Cannot add user",
             });
         });
     });
