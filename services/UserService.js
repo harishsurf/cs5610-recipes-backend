@@ -92,7 +92,8 @@ updateUserRole = async (requestingUser, userId, type) => {
         }
         
         await updatedRecord.save();
-        const finalUser = await this.findUserById(userId);
+        const finalUser = await findUserById(userId);
+        console.log("Final answer", finalUser);
         return finalUser;
     } else {
         return null;
