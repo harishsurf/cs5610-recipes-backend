@@ -1,9 +1,16 @@
 const mongoose = require('mongoose');
 
 let recipeSchema = new mongoose.Schema({
-    recipe_name: String,
+    title: String,
+    id: int,
+    image: String,
+    imageType: String,
     ingredients: String,
-    tags : {type: String, enum: ["enum1", "enum2"]},
+    instructions: String,
+    readyInMinutes: int,
+    servings: int,
+    sourceUrl: String,
+    // not sure how this should be named
     user_id: {type: mongoose.Schema.Types.ObjectId, ref: 'UserModel'}
 }, {collection: 'recipes'});
 
