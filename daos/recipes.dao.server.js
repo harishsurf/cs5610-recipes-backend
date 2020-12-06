@@ -1,5 +1,5 @@
-const recipesModel = require('../models/recipes.model')
-const usersModel = require('../models/User.model')
+const recipesModel = require('../models/recipes/recipes.model.server');
+const usersModel = require('../models/users/users.model.server');
 
 createRecipe = (newRecipe) => recipesModel.create(newRecipe);
 

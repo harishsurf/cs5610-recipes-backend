@@ -1,10 +1,8 @@
-// Add the destination file for the database
-require('./models/db');
-
-// Create a constant variable for the express server
 const express = require('express');
-let app = express();
-let bodyParser = require('body-parser');
+const app = express();
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
@@ -19,10 +17,14 @@ app.use(function (req, res, next) {
     next();
 });
 
-const controller = require('./controller/controller');
-const userController = require('./controller/UserController');
+mongoose.connect('mongodb://localhost:27017/recipes', {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+    useCreateIndex: true
+});
 
-controller(app);
+const userController = require('./controllers/users.controller.server');
+
 userController(app);
 
 // Create a listener for the port
