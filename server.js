@@ -17,15 +17,25 @@ app.use(function (req, res, next) {
     next();
 });
 
-mongoose.connect('mongodb://localhost:27017/recipes', {
+const atlasConnection = 'mongodb+srv://admin:admin@recipes-mongodb.rafj8.mongodb.net/recipes?retryWrites=true&w=majority'
+const localhost = 'mongodb://localhost:27017/recipes';
+
+mongoose.connect(atlasConnection, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true
 });
 
+const connection = mongoose.connection;
+connection.once('open', () => {
+    console.log("MongoDB database connection established successfully");
+});
+
 const userController = require('./controllers/users.controller.server');
+const recipeController = require('./controllers/recipes.controller.server');
 
 userController(app);
+recipeController(app);
 
 // Create a listener for the port
 app.listen(4000, () => {
