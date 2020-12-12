@@ -48,8 +48,13 @@ const getAllOwnedRecipes = async (userId) => {
 }
 
 const getLatestRecipes = async (userId) => {
-    const recipes = await recipeModel.find({userId: userId}).populate("userId").sort({updatedAt: -1}).limit(10);
+    const recipes = await recipeModel.find({userId: userId}).populate("userId").sort({updatedAt: -1}).limit(5);
     return recipes;
+}
+
+const findLocalRecipe = async (recipeId) => {
+    const recipe = await recipeModel.findById(recipeId);
+    return recipe;
 }
 
 module.exports = {
@@ -57,5 +62,6 @@ module.exports = {
     updateRecipe,
     deleteRecipe,
     getAllOwnedRecipes,
-    getLatestRecipes
+    getLatestRecipes,
+    findLocalRecipe
 }

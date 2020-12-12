@@ -1,13 +1,65 @@
-const recipeService = require('../services/recipes.service.server');
-const userService = require('../services/users.service.server');
 const userSavedRecipe = require('../services/user-saved-recipe.service.server');
-const axios = require('axios');
-const apiKey = "fd8eb1342ad14b99aa1933816c38d9fe"
-const baseUrl = "https://api.spoonacular.com/recipes";
-
 
 module.exports = function (app) {
     
-    app.get()
+    app.post('/api/recipes/:recipeId/users/:userId', (req, res) => {
+        const recipeId = req.params.recipeId;
+        const userId = req.params.userId;
+
+        userSavedRecipe.saveRecipe(recipeId, userId)
+            .then((data) => {
+                if(data && !data.error) {
+                    res.json(data);
+                } else {
+                    res.status(500).send({
+                        error: data.error,
+                    });
+                }
+            }).catch((err) => {
+                res.status(500).send({
+                    error: err,
+                });
+            })
+    });
+
+    app.delete('/api/recipes/:recipeId/users/:userId', (req, res) => {
+        const recipeId = req.params.recipeId;
+        const userId = req.params.userId;
+
+        userSavedRecipe.deleteSavedRecipe(recipeId, userId)
+            .then((data) => {
+                if(data && !data.error) {
+                    res.json(data);
+                } else {
+                    res.status(500).send({
+                        error: data.error,
+                    });
+                }
+            }).catch((err) => {
+                res.status(500).send({
+                    error: err,
+                });
+            })
+    });
+
+    app.get('/api/users/saved/recipes/:userId', , (req, res) => {
+        const recipeId = req.params.recipeId;
+        const userId = req.params.userId;
+
+        userSavedRecipe.findAllRecipeForUser(userId)
+            .then((data) => {
+                if(data && !data.error) {
+                    res.json(data);
+                } else {
+                    res.status(500).send({
+                        error: data.error,
+                    });
+                }
+            }).catch((err) => {
+                res.status(500).send({
+                    error: err,
+                });
+            })
+    })
 
 }
