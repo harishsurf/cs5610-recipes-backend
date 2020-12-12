@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="97fbee37-ad15-4f10-8df4-28db3859487d" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/controllers/recipes.controller.server.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/recipes.controller.server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/controllers/users.controller.server.js" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/users.controller.server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/daos/recipes.dao.server.js" beforeDir="false" afterPath="$PROJECT_DIR$/daos/recipes.dao.server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/metadata-user-recipe/metadata-user-recipe.model.server.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/metadata-user-recipe/metadata-user-recipe.model.server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/services/recipes.service.server.js" beforeDir="false" afterPath="$PROJECT_DIR$/services/recipes.service.server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,7 +50,7 @@
       <workItem from="1606612576873" duration="857000" />
       <workItem from="1606667303929" duration="695000" />
       <workItem from="1607041580932" duration="171000" />
-      <workItem from="1607738368561" duration="7781000" />
+      <workItem from="1607738368561" duration="10866000" />
     </task>
     <servers />
   </component>

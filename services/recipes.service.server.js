@@ -26,6 +26,7 @@ const fetchRandomRecipeApi = async () => {
 
 const getRecipebyId = async (recipeId) => {
 
+//TODO add try/catch maybe
     const recipe = await recipeDao.getRecipeById(recipeId);
     if (recipe != null) {
         return recipe;
@@ -58,14 +59,18 @@ const getRecipebyId = async (recipeId) => {
 
 const convertSpoonacularRecipe = (spoonacularRecipeDetails) => {
 
-    const ingredients = spoonacularRecipeDetails.extendedIngredients.map(
-        extendedIngredient => `${extendedIngredient.originalString}\n`);
-    console.log(ingredients)
-    const instructions = spoonacularRecipeDetails.analyzedInstructions.steps.map(step => `${step}\n`)
+    let ingredientString = '';
+    spoonacularRecipeDetails.extendedIngredients.forEach(
+        extendedIngredient => {
+            ingredientString = `${ingredientString}${extendedIngredient.originalString}\n`
+        });
+    console.log(ingredientString)
+    const instructions = spoonacularRecipeDetails.instructions;
+    //const instructions = spoonacularRecipeDetails.analyzedInstructions.steps.map(step => `${step}\n`)
     console.log(instructions)
     const recipe = {
         title: spoonacularRecipeDetails.title,
-        ingredients: ingredients,
+        ingredients: ingredientString,
         instructions: instructions,
         readyInMinutes: spoonacularRecipeDetails.readyInMinutes,
         servings: spoonacularRecipeDetails.servings,
