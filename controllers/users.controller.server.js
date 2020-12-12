@@ -49,9 +49,9 @@ module.exports = function (app) {
             });
     });
 
-    app.get('/api/users/all/:userId', (req, res) => {
+    app.get('/api/users/all', (req, res) => {
         const userId = req.params.userId;
-        userService.findAllUsers(userId)
+        userService.findAllUsers()
             .then(users => {
                 if (users) {
                     res.json(users);

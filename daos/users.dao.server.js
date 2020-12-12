@@ -37,14 +37,8 @@ const addAdminUser = async (user) => {
     return addedUser._doc;
 }
 
-const findAllUsers = async (userId) => {
-    const adminUser = await adminUserModel.findOne({
-        user: userId,
-    });
-    if (adminUser) {
-        return await userModel.find();
-    }
-    return null;
+const findAllUsers = async () => {
+    return await userModel.find();
 }
 
 const updateUser = async (userId, updatedUser) => {

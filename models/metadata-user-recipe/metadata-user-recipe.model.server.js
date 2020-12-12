@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const adminUserSchema = require('./admin-users.schema.server');
+const metaDataSchema = require('./metadata-user-recipe.schema.server');
 
-const adminUserModel = mongoose.model('AdminUserModel', adminUserSchema);
+const metaData = mongoose.model('MetaDataSchema', metaDataSchema);
 
-module.exports = adminUserModel;
+module.exports = metaData;
