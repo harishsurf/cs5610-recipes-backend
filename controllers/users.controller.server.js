@@ -1,6 +1,7 @@
 const userService = require('../services/users.service.server');
 
 module.exports = function (app) {
+    // Create user
     app.post('/api/users', (req, res) => {
         const user = req.body;
         userService.addUser(user)
@@ -15,6 +16,7 @@ module.exports = function (app) {
             });
     });
 
+    // Create admin user
     app.post('/api/users/admin', (req, res) => {
         const user = req.body;
         console.log(user);
@@ -29,6 +31,7 @@ module.exports = function (app) {
         });
     });
 
+    // Validate user
     app.post('/api/users/validate', (req, res) => {
         const username = req.body.username;
         const password = req.body.password;
@@ -49,6 +52,7 @@ module.exports = function (app) {
             });
     });
 
+    // TODO Why do we have this?
     app.get('/api/users/all/:userId', (req, res) => {
         const userId = req.params.userId;
         userService.findAllUsers(userId)
@@ -68,6 +72,7 @@ module.exports = function (app) {
         });
     });
 
+    // Get user by id
     app.get('/api/users/:userId', (req, res) => {
         const userId = req.params.userId;
         userService.findUserById(userId)
@@ -87,6 +92,7 @@ module.exports = function (app) {
         });
     });
 
+    // Update user
     app.put('/api/users/:userId', (req, res) => {
         const userId = req.params.userId;
         const updatedUser = req.body;
@@ -110,6 +116,7 @@ module.exports = function (app) {
         });
     });
 
+    // Update role
     app.put('/api/users/:userId/role', (req, res) => {
         const userId = req.params.userId;
         const requestingUser = req.body.requestingUser;
@@ -131,6 +138,7 @@ module.exports = function (app) {
         });
     });
 
+    // Delete user
     app.delete('/api/users/:userId', (req, res) => {
         const userToDelete = req.params.userId;
         userService.deleteUser(userToDelete)
