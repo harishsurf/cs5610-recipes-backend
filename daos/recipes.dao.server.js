@@ -1,6 +1,11 @@
 const userModel = require('../models/users/users.model.server');
 const recipeModel = require('../models/recipes/recipes.model.server');
 
+const getRecipeById = async (recipeId) => {
+    const recipe = await recipeModel.findById(recipeId);
+    return recipe;
+}
+
 const addRecipe = async (recipe) => {
     const newRecipe = new recipeModel({
         ...recipe,
@@ -63,5 +68,6 @@ module.exports = {
     deleteRecipe,
     getAllOwnedRecipes,
     getLatestRecipes,
-    findLocalRecipe
+    findLocalRecipe,
+    getRecipeById
 }
