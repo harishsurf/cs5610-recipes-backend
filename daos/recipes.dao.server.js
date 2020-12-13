@@ -67,6 +67,11 @@ const findLocalRecipe = async (recipeId) => {
     return recipe;
 }
 
+const findAllLocalRecipe = async () => {
+    const recipes = await recipeModel.find({}).populate("userId");
+    return recipes;
+}
+
 module.exports = {
     addRecipe,
     updateRecipe,
@@ -74,5 +79,6 @@ module.exports = {
     getAllOwnedRecipes,
     getLatestRecipes,
     findLocalRecipe,
-    getRecipeById
+    getRecipeById,
+    findAllLocalRecipe
 }

@@ -14,14 +14,34 @@ const addRecipe = (userId, recipe) => {
 
 const fetchRandomRecipeApi = async () => {
     try {
-        const recipes = await axios.get(`${baseUrl}/random?number=16&apiKey=${apiKey}`)
-        return recipes.data;
+        const recipes = await axios.get(`${baseUrl}/random?number=16&apiKey=${apiKey}`);
+        const allLocalRecipes = await recipeDao.findAllLocalRecipe();
+        const finalRecipes = [
+            ...convertRecipes(recipes.data.recipes),
+            allLocalRecipes
+        ];
+        return finalRecipes;
+
     } catch (e) {
         return {
             err: e,
             msg: "Failed to fetch recipes",
         };
     }
+}
+
+const convertRecipes = (recipes) => {
+    return recipes.map(recipe => ({
+        _id: recipe.id,
+        title: recipe.title,
+        readyInMinutes: recipe.readyInMinutes,
+        servings: recipe.servings,
+        imageUrl: recipe.image,
+        sourceUrl: recipe.sourceUrl,
+        userId: {
+            username: recipe.sourceName || 'spoonacular',
+        }
+    }));
 }
 
 const getRecipeById = async (recipeId) => {
@@ -62,7 +82,7 @@ const convertSpoonacularRecipe = (spoonacularRecipeDetails, recipeId) => {
         instructions: instructions,
         readyInMinutes: spoonacularRecipeDetails.readyInMinutes,
         servings: spoonacularRecipeDetails.servings,
-        imageUrl: spoonacularRecipeDetails.imageUrl,
+        imageUrl: spoonacularRecipeDetails.image,
         sourceUrl: spoonacularRecipeDetails.sourceUrl
     }
     return recipe
