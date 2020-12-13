@@ -25,12 +25,13 @@ const saveRecipe = async (recipeId, userId) => {
     const recipe = await recipeModel.find({
         _id: recipeId,
     });
-    if(recipeId == null) {
-        recipe = await recipeService.getRecipeById(recipeId);
-        const savedThirdPartyRecipe = new recipeModel(
-            ...recipe
+    if (recipe == null) {
+        const thirdPartyRecipe = await recipeService.getRecipeById(recipeId);
+        const savedThirdPartyRecipe = new recipeModel({
+                ...thirdPartyRecipe
+            }
         );
-        savedThirdPartyRecipe.save();
+        await savedThirdPartyRecipe.save();
     }
     const savedRecipe = new userSavedRecipeModel({
         user: userId,
@@ -43,14 +44,14 @@ const saveRecipe = async (recipeId, userId) => {
     const fetchSavedRecipe = await userSavedRecipeModel.find({
         user: userId,
         recipe: recipeId
-    }).populate('user recipe'); 
+    }).populate('user recipe');
     return fetchSavedRecipe;
 }
 
-const findRecentSavedRecipe =  async (userId) => {
+const findRecentSavedRecipe = async (userId) => {
     const fetchSavedRecipe = await userSavedRecipeModel.find({
         user: userId,
-    }).populate("user recipe").sort({createdAt: -1}).limit(10); 
+    }).populate("user recipe").sort({createdAt: -1}).limit(10);
 
     const recipes = fetchSavedRecipe.map(savedRecipe => savedRecipe.recipe);
     return recipes;
@@ -59,7 +60,7 @@ const findRecentSavedRecipe =  async (userId) => {
 const findAllSavedRecipes = async (userId) => {
     const fetchSavedRecipe = await userSavedRecipeModel.find({
         user: userId,
-    }).populate("user recipe").sort({createdAt: -1}); 
+    }).populate("user recipe").sort({createdAt: -1});
 
     const recipes = fetchSavedRecipe.map(savedRecipe => savedRecipe.recipe);
 
@@ -67,9 +68,8 @@ const findAllSavedRecipes = async (userId) => {
 }
 
 
-
 module.exports = {
-    deleteSavedRecipe, 
+    deleteSavedRecipe,
     saveRecipe,
     findRecentSavedRecipe,
     findAllSavedRecipes

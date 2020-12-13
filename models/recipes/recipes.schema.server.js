@@ -8,7 +8,8 @@ const recipeSchema = new mongoose.Schema({
     servings: Number,
     sourceUrl: String,
     imageUrl: String,
-    userId: {type: mongoose.Schema.Types.ObjectId, ref: 'UserModel'}
+    userId: {type: mongoose.Schema.Types.ObjectId, ref: 'UserModel'},
+    reviewComments : {type: Array, ref: 'ReviewCommentsModel'}
 }, {collection: 'recipes', timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }});
 
 module.exports = recipeSchema;
