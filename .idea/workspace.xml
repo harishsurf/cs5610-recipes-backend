@@ -32,6 +32,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="97fbee37-ad15-4f10-8df4-28db3859487d" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/services/recipes.service.server.js" beforeDir="false" afterPath="$PROJECT_DIR$/services/recipes.service.server.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
