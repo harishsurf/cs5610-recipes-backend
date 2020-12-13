@@ -1,5 +1,4 @@
 const recipeDao = require('../daos/recipes.dao.server');
-const usersService = require('./users.service.server');
 const axios = require('axios');
 const apiKey = "fd8eb1342ad14b99aa1933816c38d9fe"
 const baseUrl = "https://api.spoonacular.com/recipes";
@@ -46,19 +45,32 @@ const convertRecipes = (recipes) => {
 
 const getRecipeById = async (recipeId) => {
 
-//TODO add try/catch maybe
-    const recipe = await recipeDao.getRecipeById(recipeId);
-    if (recipe != null) {
-        return recipe;
-    } else {
+    try {
+        const recipe = await recipeDao.getRecipeById(recipeId);
+        if (recipe != null) {
+            return recipe;
+        } else {
+            try {
+                const recipeDetailsSecondHalf = "information?includeNutrition=false&apiKey=fd8eb1342ad14b99aa1933816c38d9fe"
+                const spoonacularRecipe = await axios.get(`${baseUrl}/${recipeId}/${recipeDetailsSecondHalf}`);
+                return convertSpoonacularRecipe(spoonacularRecipe.data);
+            } catch (e) {
+                return {
+                    err: e,
+                    msg: "Failed to fetch recipe from Spoonacular"
+                }
+            }
+        }
+    } catch (e) {
+        console.log("failed to find recipe in local DB")
         try {
             const recipeDetailsSecondHalf = "information?includeNutrition=false&apiKey=fd8eb1342ad14b99aa1933816c38d9fe"
             const spoonacularRecipe = await axios.get(`${baseUrl}/${recipeId}/${recipeDetailsSecondHalf}`);
             return convertSpoonacularRecipe(spoonacularRecipe.data, recipeId);
-        } catch (e) {
+        } catch (e2) {
             return {
-                err: e,
-                msg: "Failed to fetch recipe"
+                err: e2,
+                msg: "Failed to fetch recipe from Spoonacular"
             }
         }
     }
@@ -104,6 +116,14 @@ const getLatestRecipes = (userId) => {
     return recipeDao.getLatestRecipes(userId);
 }
 
+const findReviewCommentsForRecipe = (recipeId) => {
+    return recipeDao.findReviewCommentsForRecipe(recipeId);
+}
+
+const updateReviewComments = (recipeId, reviewCommentObj) => {
+    return recipeDao.updateReviewComments(recipeId, reviewCommentObj);
+}
+
 module.exports = {
     addRecipe,
     fetchRandomRecipeApi,
@@ -111,5 +131,7 @@ module.exports = {
     deleteRecipe,
     getAllOwnedRecipes,
     getRecipeById,
-    getLatestRecipes
+    getLatestRecipes,
+    findReviewCommentsForRecipe,
+    updateReviewComments,
 };
