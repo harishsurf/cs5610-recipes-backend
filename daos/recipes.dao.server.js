@@ -1,3 +1,5 @@
+const recipeService = require("../services/recipes.service.server");
+
 const userModel = require('../models/users/users.model.server');
 const recipeModel = require('../models/recipes/recipes.model.server');
 const userSavedRecipeModel = require('../models/user-saved-recipe/user-saved-recipe.model.server');
@@ -67,6 +69,49 @@ const findLocalRecipe = async (recipeId) => {
     return recipe;
 }
 
+const findAllRecipes = async () => {
+    const data = await recipeModel.find().populate("userId");
+    return data;
+}
+
+
+const findReviewCommentsForRecipe = async (recipeId) => {
+    const recipeWithReviewComment = await recipeModel.find({_id: recipeId}).populate("reviewComments");
+    return recipeWithReviewComment;
+}
+
+const updateReviewComments = async (recipeId, reviewCommentObj) => {
+    const localRecipe = await recipeModel.find({_id: recipeId});
+    if (localRecipe == null) {
+        const thirdPartyRecipe = await recipeService.getRecipeById(recipeId);
+        const savedThirdPartyRecipe = new recipeModel({
+                ...thirdPartyRecipe,
+                reviewComments: [reviewCommentObj],
+            }
+        );
+        const savedRecipe = await savedThirdPartyRecipe.save();
+        if (savedRecipe && savedRecipe._doc) {
+            return savedRecipe._doc;
+        }
+    } else {
+        const recipe = {
+            ...localRecipe,
+            reviewComments: [...localRecipe.reviewComments, reviewCommentObj]
+        }
+        const recipeFound = await recipeModel.findByIdAndUpdate(recipeId, recipe, {
+            new: true,
+        })
+        if (recipeFound) {
+            return recipeFound;
+        }
+        const error = {
+            error: "Cannot update recipe",
+        };
+        return error;
+    }
+}
+
+
 module.exports = {
     addRecipe,
     updateRecipe,
@@ -74,5 +119,8 @@ module.exports = {
     getAllOwnedRecipes,
     getLatestRecipes,
     findLocalRecipe,
-    getRecipeById
+    getRecipeById,
+    findAllRecipes,
+    findReviewCommentsForRecipe,
+    updateReviewComments
 }

@@ -17,10 +17,10 @@ app.use(function (req, res, next) {
     next();
 });
 
-// const atlasConnection = 'mongodb+srv://admin:admin@recipes-mongodb.rafj8.mongodb.net/recipes?retryWrites=true&w=majority';
+const atlasConnection = 'mongodb+srv://admin:admin@recipes-mongodb.rafj8.mongodb.net/recipes?retryWrites=true&w=majority';
 const localhost = 'mongodb://localhost:27017/recipes';
 
-mongoose.connect(localhost, {
+mongoose.connect(atlasConnection, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true
@@ -40,6 +40,6 @@ recipeController(app);
 userSavedRecipesController(app);
 
 // Create a listener for the port
-app.listen(4000, () => {
+app.listen(process.env.PORT || 4000, () => {
     console.log('Now starting at port: 4000');
 });

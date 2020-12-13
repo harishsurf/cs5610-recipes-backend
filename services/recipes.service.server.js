@@ -1,5 +1,4 @@
 const recipeDao = require('../daos/recipes.dao.server');
-const usersService = require('./users.service.server');
 const axios = require('axios');
 const apiKey = "fd8eb1342ad14b99aa1933816c38d9fe"
 const baseUrl = "https://api.spoonacular.com/recipes";
@@ -15,7 +14,24 @@ const addRecipe = (userId, recipe) => {
 const fetchRandomRecipeApi = async () => {
     try {
         const recipes = await axios.get(`${baseUrl}/random?number=16&apiKey=${apiKey}`)
-        return recipes.data;
+        const randomRecipeObj = recipes.data.map( recipe => {
+            return {
+                _id: recipe.id,
+                title: recipe.title,
+                readyInMinutes: recipe.readyInMinutes,
+                servings: recipe.servings,
+                sourceUrl: recipe.sourceUrl,
+                imageUrl: recipe.image,
+                userId: {
+                    username : recipe.sourceName || "sponnacular"
+                }
+            }
+        })
+        const localRecipeObj = await recipeDao.findAllRecipes();
+        return [
+            ...randomRecipeObj,
+            ...localRecipeObj
+        ]
     } catch (e) {
         return {
             err: e,
@@ -97,6 +113,14 @@ const getLatestRecipes = (userId) => {
     return recipeDao.getLatestRecipes(userId);
 }
 
+const findReviewCommentsForRecipe = (recipeId) => {
+    return recipeDao.findReviewCommentsForRecipe(recipeId);
+}
+
+const updateReviewComments = (recipeId, reviewCommentObj) => {
+    return recipeDao.updateReviewComments(recipeId, reviewCommentObj);
+}
+
 module.exports = {
     addRecipe,
     fetchRandomRecipeApi,
@@ -104,5 +128,7 @@ module.exports = {
     deleteRecipe,
     getAllOwnedRecipes,
     getRecipeById,
-    getLatestRecipes
+    getLatestRecipes,
+    findReviewCommentsForRecipe,
+    updateReviewComments,
 };
