@@ -75,7 +75,7 @@ const convertSpoonacularRecipe = (spoonacularRecipeDetails, recipeId) => {
         instructions: instructions,
         readyInMinutes: spoonacularRecipeDetails.readyInMinutes,
         servings: spoonacularRecipeDetails.servings,
-        image: spoonacularRecipeDetails.image,
+        imageUrl: spoonacularRecipeDetails.image,
         sourceUrl: spoonacularRecipeDetails.sourceUrl
     }
     return recipe
