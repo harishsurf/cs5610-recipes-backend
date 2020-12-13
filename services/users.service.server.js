@@ -1,6 +1,6 @@
 const userDao = require('../daos/users.dao.server');
 
-const findAllUsers = (userId) => userDao.findAllUsers(userId);
+const findAllUsers = () => userDao.findAllUsers();
 
 const findUserById = (userId) => userDao.findUserById(userId);
 

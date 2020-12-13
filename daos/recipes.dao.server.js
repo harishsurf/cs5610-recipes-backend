@@ -1,8 +1,10 @@
 const userModel = require('../models/users/users.model.server');
 const recipeModel = require('../models/recipes/recipes.model.server');
+const userSavedRecipeModel = require('../models/user-saved-recipe/user-saved-recipe.model.server');
 
 const getRecipeById = async (recipeId) => {
-    return recipeModel.findById(recipeId);
+    const recipe = await recipeModel.findById(recipeId).populate("userId");
+    return recipe;
 }
 
 const addRecipe = async (recipe) => {
@@ -41,6 +43,10 @@ const deleteRecipe = async (recipeId) => {
         _id: recipeId,
     });
 
+    userSavedRecipeModel.deleteMany({
+        recipe: recipeId,
+    });
+
     return data;
 }
 
@@ -52,8 +58,13 @@ const getAllOwnedRecipes = async (userId) => {
 }
 
 const getLatestRecipes = async (userId) => {
-    const recipes = await recipeModel.find({userId: userId}).populate("userId").sort({updatedAt: -1}).limit(10);
+    const recipes = await recipeModel.find({userId: userId}).populate("userId").sort({updatedAt: -1}).limit(5);
     return recipes;
+}
+
+const findLocalRecipe = async (recipeId) => {
+    const recipe = await recipeModel.findById(recipeId);
+    return recipe;
 }
 
 module.exports = {
@@ -62,5 +73,6 @@ module.exports = {
     deleteRecipe,
     getAllOwnedRecipes,
     getLatestRecipes,
+    findLocalRecipe,
     getRecipeById
 }

@@ -26,38 +26,38 @@ const fetchRandomRecipeApi = async () => {
 
 const getRecipeById = async (recipeId) => {
 
-//TODO add try/catch maybe
-    const recipe = await recipeDao.getRecipeById(recipeId);
-    if (recipe != null) {
-        return recipe;
-    } else {
+    try {
+        const recipe = await recipeDao.getRecipeById(recipeId);
+        if (recipe != null) {
+            return recipe;
+        } else {
+            try {
+                const recipeDetailsSecondHalf = "information?includeNutrition=false&apiKey=fd8eb1342ad14b99aa1933816c38d9fe"
+                const spoonacularRecipe = await axios.get(`${baseUrl}/${recipeId}/${recipeDetailsSecondHalf}`);
+                return convertSpoonacularRecipe(spoonacularRecipe.data);
+            } catch (e) {
+                return {
+                    err: e,
+                    msg: "Failed to fetch recipe from Spoonacular"
+                }
+            }
+        }
+    } catch (e) {
+        console.log("failed to find recipe in local DB")
         try {
             const recipeDetailsSecondHalf = "information?includeNutrition=false&apiKey=fd8eb1342ad14b99aa1933816c38d9fe"
             const spoonacularRecipe = await axios.get(`${baseUrl}/${recipeId}/${recipeDetailsSecondHalf}`);
-            return convertSpoonacularRecipe(spoonacularRecipe.data);
-        } catch (e) {
+            return convertSpoonacularRecipe(spoonacularRecipe.data, recipeId);
+        } catch (e2) {
             return {
-                err: e,
-                msg: "Failed to fetch recipe"
+                err: e2,
+                msg: "Failed to fetch recipe from Spoonacular"
             }
         }
     }
 }
 
-// class spoonacularRecipeDetails
-//
-// = {
-//     title: '',
-//     extendedIngredients: [{originalString: ''}],
-//     instructions: '',
-//     readyInMinutes: '',
-//     servings: '',
-//     sourceUrl: '',
-//     imageUrl: '',
-//     analyzedInstructions: [{steps: [{step: ''}]}]
-// }
-
-const convertSpoonacularRecipe = (spoonacularRecipeDetails) => {
+const convertSpoonacularRecipe = (spoonacularRecipeDetails, recipeId) => {
 
     let ingredientString = '';
     spoonacularRecipeDetails.extendedIngredients.forEach(
@@ -69,6 +69,7 @@ const convertSpoonacularRecipe = (spoonacularRecipeDetails) => {
     //const instructions = spoonacularRecipeDetails.analyzedInstructions.steps.map(step => `${step}\n`)
     console.log(instructions)
     const recipe = {
+        _id: recipeId,
         title: spoonacularRecipeDetails.title,
         ingredients: ingredientString,
         instructions: instructions,
@@ -92,11 +93,16 @@ const getAllOwnedRecipes = (userId) => {
     return recipeDao.getAllOwnedRecipes(userId);
 }
 
+const getLatestRecipes = (userId) => {
+    return recipeDao.getLatestRecipes(userId);
+}
+
 module.exports = {
     addRecipe,
     fetchRandomRecipeApi,
     updateRecipe,
     deleteRecipe,
     getAllOwnedRecipes,
-    getRecipeById
+    getRecipeById,
+    getLatestRecipes
 };
