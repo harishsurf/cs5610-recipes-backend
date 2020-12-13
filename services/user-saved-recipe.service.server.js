@@ -7,6 +7,11 @@ const saveRecipe = (recipeId, userId) => {
     recipeDao.findLocalRecipe(recipeId).then(data => {
         if(data) {
             userSavedRecipeDao.saveRecipe(recipeId, userId);
+        } else {
+            recipeDao.getRecipeById(recipeId).then(recipe => {
+                recipeDao.saveRecipe(recipe);
+                userSavedRecipeDao.saveRecipe(recipeId, userId);
+            });
         }
     }).catch(err => {
         return {

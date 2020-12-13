@@ -34,7 +34,7 @@ const getRecipeById = async (recipeId) => {
         try {
             const recipeDetailsSecondHalf = "information?includeNutrition=false&apiKey=fd8eb1342ad14b99aa1933816c38d9fe"
             const spoonacularRecipe = await axios.get(`${baseUrl}/${recipeId}/${recipeDetailsSecondHalf}`);
-            return convertSpoonacularRecipe(spoonacularRecipe.data);
+            return convertSpoonacularRecipe(spoonacularRecipe.data, recipeId);
         } catch (e) {
             return {
                 err: e,
@@ -57,7 +57,7 @@ const getRecipeById = async (recipeId) => {
 //     analyzedInstructions: [{steps: [{step: ''}]}]
 // }
 
-const convertSpoonacularRecipe = (spoonacularRecipeDetails) => {
+const convertSpoonacularRecipe = (spoonacularRecipeDetails, recipeId) => {
 
     let ingredientString = '';
     spoonacularRecipeDetails.extendedIngredients.forEach(
@@ -69,6 +69,7 @@ const convertSpoonacularRecipe = (spoonacularRecipeDetails) => {
     //const instructions = spoonacularRecipeDetails.analyzedInstructions.steps.map(step => `${step}\n`)
     console.log(instructions)
     const recipe = {
+        _id: recipeId,
         title: spoonacularRecipeDetails.title,
         ingredients: ingredientString,
         instructions: instructions,
