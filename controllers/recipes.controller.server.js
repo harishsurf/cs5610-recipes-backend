@@ -88,7 +88,7 @@ module.exports = function (app) {
     });
 
 
-    app.get('api/recentRecipes/user/:userId', (req, res) => {
+    app.get('api/recentRecipes/users/:userId', (req, res) => {
         const userId = req.params.userId;
         recipeService.getLatestRecipes(userId).then((data) => {
             if(data && !data.error) {

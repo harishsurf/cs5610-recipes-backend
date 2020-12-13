@@ -1,8 +1,11 @@
 const userSavedRecipeModel = require('../models/user-saved-recipe/user-saved-recipe.model.server');
+const userModel = require('../models/users/users.model.server');
+const recipeModel = require('../models/recipes/recipes.model.server');
+const recipeService = require('../services/recipes.service.server');
 
 const deleteSavedRecipe = async (recipeId, userId) => {
     try {
-        const data = userSavedRecipeModel.findOne({
+        const data = await userSavedRecipeModel.findOne({
             user: userId,
             recipe: recipeId,
         });
@@ -19,6 +22,16 @@ const deleteSavedRecipe = async (recipeId, userId) => {
 }
 
 const saveRecipe = async (recipeId, userId) => {
+    const recipe = await recipeModel.find({
+        _id: recipeId,
+    });
+    if(recipeId == null) {
+        recipe = await recipeService.getRecipeById(recipeId);
+        const savedThirdPartyRecipe = new recipeModel(
+            ...recipe
+        );
+        savedThirdPartyRecipe.save();
+    }
     const savedRecipe = new userSavedRecipeModel({
         user: userId,
         recipe: recipeId

@@ -3,7 +3,7 @@ const recipeModel = require('../models/recipes/recipes.model.server');
 const userSavedRecipeModel = require('../models/user-saved-recipe/user-saved-recipe.model.server');
 
 const getRecipeById = async (recipeId) => {
-    const recipe = await recipeModel.findById(recipeId);
+    const recipe = await recipeModel.findById(recipeId).populate("userId");
     return recipe;
 }
 

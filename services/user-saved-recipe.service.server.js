@@ -1,26 +1,13 @@
 const userSavedRecipeDao = require('../daos/user-saved-recipe.dao.server');
 const recipeDao = require('../daos/recipes.dao.server');
 
-const findAllRecipeForUser = (userId) => userSavedRecipeDao.find(userId);
+const findAllRecipeForUser = (userId) => userSavedRecipeDao.findAllSavedRecipes(userId);
 
 const saveRecipe = (recipeId, userId) => {
-    recipeDao.findLocalRecipe(recipeId).then(data => {
-        if(data) {
-            userSavedRecipeDao.saveRecipe(recipeId, userId);
-        } else {
-            recipeDao.getRecipeById(recipeId).then(recipe => {
-                recipeDao.saveRecipe(recipe);
-                userSavedRecipeDao.saveRecipe(recipeId, userId);
-            });
-        }
-    }).catch(err => {
-        return {
-            error: "Failed To save recipe.",
-        }
-    })
+    return userSavedRecipeDao.saveRecipe(recipeId, userId);
 };
 
-const deleteSavedRecipe = (recipeId, userId) => userSavedRecipeDao.deleteSavedRecipe(userId,recipeId);
+const deleteSavedRecipe = (recipeId, userId) => userSavedRecipeDao.deleteSavedRecipe(recipeId, userId);
 
 const findRecentSavedRecipe = (userId) => userSavedRecipeDao.findRecentSavedRecipe(userId);
 

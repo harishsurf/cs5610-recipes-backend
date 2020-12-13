@@ -6,8 +6,7 @@ module.exports = function (app) {
         const recipeId = req.params.recipeId;
         const userId = req.params.userId;
 
-        userSavedRecipe.saveRecipe(recipeId, userId)
-            .then((data) => {
+        userSavedRecipe.saveRecipe(recipeId, userId).then((data) => {
                 if(data && !data.error) {
                     res.json(data);
                 } else {
