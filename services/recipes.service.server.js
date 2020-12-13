@@ -92,11 +92,16 @@ const getAllOwnedRecipes = (userId) => {
     return recipeDao.getAllOwnedRecipes(userId);
 }
 
+const getLatestRecipes = (userId) => {
+    return recipeDao.getLatestRecipes(userId);
+}
+
 module.exports = {
     addRecipe,
     fetchRandomRecipeApi,
     updateRecipe,
     deleteRecipe,
     getAllOwnedRecipes,
-    getRecipeById
+    getRecipeById,
+    getLatestRecipes
 };

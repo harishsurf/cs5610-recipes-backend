@@ -1,7 +1,7 @@
 const userSavedRecipeDao = require('../daos/user-saved-recipe.dao.server');
 const recipeDao = require('../daos/recipes.dao.server');
 
-const findAllRecipeForUser = (userId) => userSavedRecipeDao.findAllSavedRecipes(userId);
+const findAllRecipeForUser = (userId) => userSavedRecipeDao.find(userId);
 
 const saveRecipe = (recipeId, userId) => {
     recipeDao.findLocalRecipe(recipeId).then(data => {
