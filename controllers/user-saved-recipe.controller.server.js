@@ -42,7 +42,7 @@ module.exports = function (app) {
             })
     });
 
-    app.get('/api/users/saved/recipes/:userId', , (req, res) => {
+    app.get('/api/savedRecipes/users/:userId', (req, res) => {
         const recipeId = req.params.recipeId;
         const userId = req.params.userId;
 
