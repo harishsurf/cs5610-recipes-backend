@@ -52,10 +52,9 @@ module.exports = function (app) {
             });
     });
 
-    // TODO Why do we have this?
-    app.get('/api/users/all/:userId', (req, res) => {
+    app.get('/api/users', (req, res) => {
         const userId = req.params.userId;
-        userService.findAllUsers(userId)
+        userService.findAllUsers()
             .then(users => {
                 if (users) {
                     res.json(users);
