@@ -1,6 +1,6 @@
 const recipeDao = require('../daos/recipes.dao.server');
 const axios = require('axios');
-const apiKey = "fd8eb1342ad14b99aa1933816c38d9fe"
+const apiKey = "54a4329446b941c4a1e48206f0703ae4"
 const baseUrl = "https://api.spoonacular.com/recipes";
 
 const addRecipe = (userId, recipe) => {
@@ -13,31 +13,34 @@ const addRecipe = (userId, recipe) => {
 
 const fetchRandomRecipeApi = async () => {
     try {
-        const recipes = await axios.get(`${baseUrl}/random?number=16&apiKey=${apiKey}`)
-        const randomRecipeObj = recipes.data.map( recipe => {
-            return {
-                _id: recipe.id,
-                title: recipe.title,
-                readyInMinutes: recipe.readyInMinutes,
-                servings: recipe.servings,
-                sourceUrl: recipe.sourceUrl,
-                imageUrl: recipe.image,
-                userId: {
-                    username : recipe.sourceName || "sponnacular"
-                }
-            }
-        })
-        const localRecipeObj = await recipeDao.findAllRecipes();
-        return [
-            ...randomRecipeObj,
-            ...localRecipeObj
-        ]
+        const recipes = await axios.get(`${baseUrl}/random?number=16&apiKey=${apiKey}`);
+        const allLocalRecipes = await recipeDao.findAllLocalRecipe();
+        const finalRecipes = [
+            ...convertRecipes(recipes.data.recipes),
+            allLocalRecipes
+        ];
+        return finalRecipes;
+
     } catch (e) {
         return {
             err: e,
             msg: "Failed to fetch recipes",
         };
     }
+}
+
+const convertRecipes = (recipes) => {
+    return recipes.map(recipe => ({
+        _id: recipe.id,
+        title: recipe.title,
+        readyInMinutes: recipe.readyInMinutes,
+        servings: recipe.servings,
+        imageUrl: recipe.image,
+        sourceUrl: recipe.sourceUrl,
+        userId: {
+            username: recipe.sourceName || 'spoonacular',
+        }
+    }));
 }
 
 const getRecipeById = async (recipeId) => {
@@ -48,7 +51,7 @@ const getRecipeById = async (recipeId) => {
             return recipe;
         } else {
             try {
-                const recipeDetailsSecondHalf = "information?includeNutrition=false&apiKey=fd8eb1342ad14b99aa1933816c38d9fe"
+                const recipeDetailsSecondHalf = `information?includeNutrition=false&apiKey=${apiKey}`
                 const spoonacularRecipe = await axios.get(`${baseUrl}/${recipeId}/${recipeDetailsSecondHalf}`);
                 return convertSpoonacularRecipe(spoonacularRecipe.data);
             } catch (e) {
@@ -61,7 +64,7 @@ const getRecipeById = async (recipeId) => {
     } catch (e) {
         console.log("failed to find recipe in local DB")
         try {
-            const recipeDetailsSecondHalf = "information?includeNutrition=false&apiKey=fd8eb1342ad14b99aa1933816c38d9fe"
+            const recipeDetailsSecondHalf = `information?includeNutrition=false&apiKey=${apiKey}`
             const spoonacularRecipe = await axios.get(`${baseUrl}/${recipeId}/${recipeDetailsSecondHalf}`);
             return convertSpoonacularRecipe(spoonacularRecipe.data, recipeId);
         } catch (e2) {
@@ -91,7 +94,7 @@ const convertSpoonacularRecipe = (spoonacularRecipeDetails, recipeId) => {
         instructions: instructions,
         readyInMinutes: spoonacularRecipeDetails.readyInMinutes,
         servings: spoonacularRecipeDetails.servings,
-        imageUrl: spoonacularRecipeDetails.imageUrl,
+        imageUrl: spoonacularRecipeDetails.image,
         sourceUrl: spoonacularRecipeDetails.sourceUrl
     }
     return recipe
