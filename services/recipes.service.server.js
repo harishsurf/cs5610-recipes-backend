@@ -43,9 +43,16 @@ const getRecipeById = async (recipeId) => {
             }
         }
     } catch (e) {
-        return {
-            err: e,
-            msg: "Failed to fetch recipe from LocalDB"
+        console.log("failed to find recipe in local DB")
+        try {
+            const recipeDetailsSecondHalf = "information?includeNutrition=false&apiKey=fd8eb1342ad14b99aa1933816c38d9fe"
+            const spoonacularRecipe = await axios.get(`${baseUrl}/${recipeId}/${recipeDetailsSecondHalf}`);
+            return convertSpoonacularRecipe(spoonacularRecipe.data);
+        } catch (e2) {
+            return {
+                err: e2,
+                msg: "Failed to fetch recipe from Spoonacular"
+            }
         }
     }
 }
