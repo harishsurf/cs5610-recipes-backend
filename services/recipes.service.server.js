@@ -44,19 +44,6 @@ const getRecipeById = async (recipeId) => {
     }
 }
 
-// class spoonacularRecipeDetails
-//
-// = {
-//     title: '',
-//     extendedIngredients: [{originalString: ''}],
-//     instructions: '',
-//     readyInMinutes: '',
-//     servings: '',
-//     sourceUrl: '',
-//     imageUrl: '',
-//     analyzedInstructions: [{steps: [{step: ''}]}]
-// }
-
 const convertSpoonacularRecipe = (spoonacularRecipeDetails, recipeId) => {
 
     let ingredientString = '';
