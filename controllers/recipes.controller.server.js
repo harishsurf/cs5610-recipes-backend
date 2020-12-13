@@ -27,8 +27,10 @@ module.exports = function (app) {
 
     app.get('/api/recipes/:recipeId', (req, res) => {
         const recipeId = req.params.recipeId;
+        console.log(recipeId);
         recipeService.getRecipeById(recipeId).then(data => {
             if (data.err) {
+                console.log(data.err, data.msg)
                 res.status(500).send(data);
             } else {
                 res.send(data);
