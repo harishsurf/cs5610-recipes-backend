@@ -1,4 +1,5 @@
 const recipeDao = require('../daos/recipes.dao.server');
+const usersService = require('./users.service.server');
 const axios = require('axios');
 const apiKey = "fd8eb1342ad14b99aa1933816c38d9fe"
 const baseUrl = "https://api.spoonacular.com/recipes";
@@ -25,7 +26,6 @@ const fetchRandomRecipeApi = async () => {
 
 const getRecipeById = async (recipeId) => {
 
-//TODO add try/catch maybe
     try {
         const recipe = await recipeDao.getRecipeById(recipeId);
         if (recipe != null) {
@@ -47,7 +47,7 @@ const getRecipeById = async (recipeId) => {
         try {
             const recipeDetailsSecondHalf = "information?includeNutrition=false&apiKey=fd8eb1342ad14b99aa1933816c38d9fe"
             const spoonacularRecipe = await axios.get(`${baseUrl}/${recipeId}/${recipeDetailsSecondHalf}`);
-            return convertSpoonacularRecipe(spoonacularRecipe.data);
+            return convertSpoonacularRecipe(spoonacularRecipe.data, recipeId);
         } catch (e2) {
             return {
                 err: e2,
@@ -57,20 +57,7 @@ const getRecipeById = async (recipeId) => {
     }
 }
 
-// class spoonacularRecipeDetails
-//
-// = {
-//     title: '',
-//     extendedIngredients: [{originalString: ''}],
-//     instructions: '',
-//     readyInMinutes: '',
-//     servings: '',
-//     sourceUrl: '',
-//     imageUrl: '',
-//     analyzedInstructions: [{steps: [{step: ''}]}]
-// }
-
-const convertSpoonacularRecipe = (spoonacularRecipeDetails) => {
+const convertSpoonacularRecipe = (spoonacularRecipeDetails, recipeId) => {
 
     let ingredientString = '';
     spoonacularRecipeDetails.extendedIngredients.forEach(
@@ -82,6 +69,7 @@ const convertSpoonacularRecipe = (spoonacularRecipeDetails) => {
     //const instructions = spoonacularRecipeDetails.analyzedInstructions.steps.map(step => `${step}\n`)
     console.log(instructions)
     const recipe = {
+        _id: recipeId,
         title: spoonacularRecipeDetails.title,
         ingredients: ingredientString,
         instructions: instructions,
@@ -105,11 +93,16 @@ const getAllOwnedRecipes = (userId) => {
     return recipeDao.getAllOwnedRecipes(userId);
 }
 
+const getLatestRecipes = (userId) => {
+    return recipeDao.getLatestRecipes(userId);
+}
+
 module.exports = {
     addRecipe,
     fetchRandomRecipeApi,
     updateRecipe,
     deleteRecipe,
     getAllOwnedRecipes,
-    getRecipeById
+    getRecipeById,
+    getLatestRecipes
 };
