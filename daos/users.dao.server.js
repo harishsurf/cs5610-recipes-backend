@@ -2,6 +2,8 @@ const userModel = require('../models/users/users.model.server');
 const browsingUserModel = require('../models/browsing-users/browsing-users.model.server');
 const adminUserModel = require('../models/admin-users/admin-users.model.server');
 const authorUserModel = require('../models/author-users/author-users.model.server');
+const recipeModel = require('../models/recipes/recipes.model.server');
+const userSavedRecipeModel = require('../models/user-saved-recipe/user-saved-recipe.model.server');
 
 const addUser = async (user) => {
     const newUser = new userModel({
@@ -185,6 +187,20 @@ const deleteUser = async (userId) => {
         _id: userId,
     });
 
+    const recipes = await recipeModel.find({
+        userId: userId,
+    });
+    recipes.forEach(recipe => {
+        recipeModel.deleteOne({
+            _id: recipe._id,
+        });
+        userSavedRecipeModel.deleteMany({
+            recipe: recipe._id,
+        });
+    });
+    userSavedRecipeModel.deleteMany({
+        user: userId,
+    });
     return data;
 }
 

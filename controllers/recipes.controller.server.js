@@ -1,4 +1,5 @@
 const recipeService = require('../services/recipes.service.server');
+const userSavedRecipe = require('../services/user-saved-recipe.service.server');
 const axios = require('axios');
 const apiKey = "fd8eb1342ad14b99aa1933816c38d9fe"
 const baseUrl = "https://api.spoonacular.com/recipes";
@@ -6,14 +7,6 @@ const baseUrl = "https://api.spoonacular.com/recipes";
 
 module.exports = function (app) {
     app.get('/api/recipes', (req, res) => {
-        // axios.get(`${baseUrl}/random?number=16&apiKey=${apiKey}`)
-        //     .then(resp => res.send(resp.data))
-        //     .catch((err) => {
-        //         res.status(500).send({
-        //             err,
-        //             msg: "Failed to fetch recipes",
-        //         });
-        //     });
         recipeService.fetchRandomRecipeApi().then(data => {
             if (data.err) {
                 res.status(500).send(data);
@@ -68,6 +61,7 @@ module.exports = function (app) {
         recipeService.updateRecipe(recipeId, recipe).then(updatedRecipe => {
             if (updatedRecipe.error) {
                 res.status(500).send({
+                    error: 'Something went wrong.',
                     msg: updatedRecipe.error,
                 });
             } else {
@@ -92,5 +86,66 @@ module.exports = function (app) {
             });
         })
     });
+
+
+    app.get('api/recentRecipes/users/:userId', (req, res) => {
+        const userId = req.params.userId;
+        recipeService.getLatestRecipes(userId).then((data) => {
+            if(data && !data.error) {
+                userSavedRecipe.findRecentSavedRecipe(userId).then((savedRecipes) => {
+                    let recipes = [];
+                    if(savedRecipes && !savedRecipes.error) {
+                        recipes = [
+                            ...data,
+                            ...savedRecipes
+                        ];
+                    } else {
+                        recipes = [
+                            ...data,
+                        ]
+                    }
+                    res.json(recipes);
+                }).catch((err) => {
+                    res.json(data);
+                })
+            } else {
+                userSavedRecipe.findRecentSavedRecipe(userId).then((savedRecipes) => {
+                    let recipes = [];
+                    if(savedRecipes && !savedRecipes.error) {
+                        recipes = [
+                            ...savedRecipes
+                        ];
+                        res.json(recipes);
+                    } else {
+                        res.status(500).send({
+                            error: 'Cannot fetch Recent Recipes',
+                        });
+                    }
+                }).catch((err) => {
+                    res.status(500).send({
+                        error: 'Cannot fetch Recent Recipes',
+                    });
+                });
+            }
+        }).catch((err) => {
+            userSavedRecipe.findRecentSavedRecipe(userId).then((savedRecipes) => {
+                let recipes = [];
+                if(savedRecipes && !savedRecipes.error) {
+                    recipes = [
+                        ...savedRecipes
+                    ];
+                    res.json(recipes);
+                } else {
+                    res.status(500).send({
+                        error: 'Cannot fetch Recent Recipes',
+                    });
+                }
+            }).catch((err) => {
+                res.status(500).send({
+                    error: 'Cannot fetch Recent Recipes',
+                });
+            });
+        })
+    })
 }
 

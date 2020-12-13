@@ -1,8 +1,9 @@
 const userModel = require('../models/users/users.model.server');
 const recipeModel = require('../models/recipes/recipes.model.server');
+const userSavedRecipeModel = require('../models/user-saved-recipe/user-saved-recipe.model.server');
 
 const getRecipeById = async (recipeId) => {
-    const recipe = await recipeModel.findById(recipeId);
+    const recipe = await recipeModel.findById(recipeId).populate("userId");
     return recipe;
 }
 
@@ -40,6 +41,10 @@ const updateRecipe = async (recipeId, recipe) => {
 const deleteRecipe = async (recipeId) => {
     const data = await recipeModel.deleteOne({
         _id: recipeId,
+    });
+
+    userSavedRecipeModel.deleteMany({
+        recipe: recipeId,
     });
 
     return data;
