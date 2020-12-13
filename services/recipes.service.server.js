@@ -13,31 +13,34 @@ const addRecipe = (userId, recipe) => {
 
 const fetchRandomRecipeApi = async () => {
     try {
-        const recipes = await axios.get(`${baseUrl}/random?number=16&apiKey=${apiKey}`)
-        const randomRecipeObj = recipes.data.map( recipe => {
-            return {
-                _id: recipe.id,
-                title: recipe.title,
-                readyInMinutes: recipe.readyInMinutes,
-                servings: recipe.servings,
-                sourceUrl: recipe.sourceUrl,
-                imageUrl: recipe.image,
-                userId: {
-                    username : recipe.sourceName || "sponnacular"
-                }
-            }
-        })
-        const localRecipeObj = await recipeDao.findAllRecipes();
-        return [
-            ...randomRecipeObj,
-            ...localRecipeObj
-        ]
+        const recipes = await axios.get(`${baseUrl}/random?number=16&apiKey=${apiKey}`);
+        const allLocalRecipes = await recipeDao.findAllLocalRecipe();
+        const finalRecipes = [
+            ...convertRecipes(recipes.data.recipes),
+            allLocalRecipes
+        ];
+        return finalRecipes;
+
     } catch (e) {
         return {
             err: e,
             msg: "Failed to fetch recipes",
         };
     }
+}
+
+const convertRecipes = (recipes) => {
+    return recipes.map(recipe => ({
+        _id: recipe.id,
+        title: recipe.title,
+        readyInMinutes: recipe.readyInMinutes,
+        servings: recipe.servings,
+        imageUrl: recipe.image,
+        sourceUrl: recipe.sourceUrl,
+        userId: {
+            username: recipe.sourceName || 'spoonacular',
+        }
+    }));
 }
 
 const getRecipeById = async (recipeId) => {
@@ -91,7 +94,7 @@ const convertSpoonacularRecipe = (spoonacularRecipeDetails, recipeId) => {
         instructions: instructions,
         readyInMinutes: spoonacularRecipeDetails.readyInMinutes,
         servings: spoonacularRecipeDetails.servings,
-        imageUrl: spoonacularRecipeDetails.imageUrl,
+        imageUrl: spoonacularRecipeDetails.image,
         sourceUrl: spoonacularRecipeDetails.sourceUrl
     }
     return recipe

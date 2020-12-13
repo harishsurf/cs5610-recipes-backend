@@ -25,11 +25,10 @@ const saveRecipe = async (recipeId, userId) => {
     const recipe = await recipeModel.find({
         _id: recipeId,
     });
-    if (recipe == null) {
+    if(recipe == null) {
         const thirdPartyRecipe = await recipeService.getRecipeById(recipeId);
-        const savedThirdPartyRecipe = new recipeModel({
-                ...thirdPartyRecipe
-            }
+        const savedThirdPartyRecipe = new recipeModel(
+            ...thirdPartyRecipe
         );
         await savedThirdPartyRecipe.save();
     }
