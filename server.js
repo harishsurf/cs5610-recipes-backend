@@ -34,10 +34,12 @@ connection.once('open', () => {
 const userController = require('./controllers/users.controller.server');
 const recipeController = require('./controllers/recipes.controller.server');
 const userSavedRecipesController = require('./controllers/user-saved-recipe.controller.server');
+const reviewCommentsController = require('./controllers/review-comments.controller.server');
 
 userController(app);
 recipeController(app);
 userSavedRecipesController(app);
+reviewCommentsController(app);
 
 // Create a listener for the port
 app.listen(process.env.PORT || 4000, () => {
