@@ -9,6 +9,7 @@ const recipeSchema = new mongoose.Schema({
     sourceUrl: String,
     imageUrl: String,
     userId: {type: mongoose.Schema.Types.ObjectId, ref: 'UserModel'},
+    id: Number,
     reviewComments : {type: Array, ref: 'ReviewCommentsModel'}
 }, {collection: 'recipes', timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }});
 

@@ -71,18 +71,72 @@ const findLocalRecipe = async (recipeId) => {
 
 const findAllLocalRecipe = async () => {
     const recipes = await recipeModel.find({}).populate("userId");
-    return recipes;
+    const finalRecipes = recipes.filter(recipe => !recipe.id);
+    return finalRecipes;
 }
 
 const findAllRecipes = async () => {
-    const data = await recipeModel.find().populate("userId");
-    return data;
+    const data = await recipeModel.find({}).populate("userId");
+    const finalRecipes = data.filter(recipe => !recipe.id);
+    // const finalRecipes = data.map(recipe => {
+    //     if(recipe.id) {
+    //         return {
+    //             title: recipe.title,
+    //             ingredients: recipe.ingredients,
+    //             instructions: recipe.instructions,
+    //             readyInMinutes: recipe.readyInMinutes,
+    //             servings: recipe.servings,
+    //             imageUrl: recipe.imageUrl,
+    //             sourceUrl: recipe.sourceUrl,
+    //             _id: recipe.id,
+    //             reviewComments: recipe.reviewComments,
+    //         }
+    //     }
+    //     return {
+    //         title: recipe.title,
+    //         ingredients: recipe.ingredients,
+    //         instructions: recipe.instructions,
+    //         readyInMinutes: recipe.readyInMinutes,
+    //         servings: recipe.servings,
+    //         imageUrl: recipe.imageUrl,
+    //         _id: recipe._id,
+    //         userId: recipe.userId,
+    //         reviewComments: recipe.reviewComments,
+    //     };
+    // });
+    return finalRecipes;
 }
 
 
 const findReviewCommentsForRecipe = async (recipeId) => {
     const recipeWithReviewComment = await recipeModel.find({_id: recipeId}).populate("reviewComments");
-    return recipeWithReviewComment;
+    const finalRecipes = recipeWithReviewComment.map(recipe => {
+        if(recipe.id) {
+            return {
+                title: recipe.title,
+                ingredients: recipe.ingredients,
+                instructions: recipe.instructions,
+                readyInMinutes: recipe.readyInMinutes,
+                servings: recipe.servings,
+                imageUrl: recipe.imageUrl,
+                sourceUrl: recipe.sourceUrl,
+                _id: recipe.id,
+                reviewComments: recipe.reviewComments,
+            }
+        }
+        return {
+            title: recipe.title,
+            ingredients: recipe.ingredients,
+            instructions: recipe.instructions,
+            readyInMinutes: recipe.readyInMinutes,
+            servings: recipe.servings,
+            imageUrl: recipe.imageUrl,
+            _id: recipe._id,
+            userId: recipe.userId,
+            reviewComments: recipe.reviewComments,
+        };
+    });
+    return finalRecipes;
 }
 
 const updateReviewComments = async (recipeId, reviewCommentObj) => {
