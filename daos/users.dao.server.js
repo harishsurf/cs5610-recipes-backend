@@ -171,6 +171,24 @@ const findUserById = async (userId) => {
 }
 
 const deleteUser = async (userId) => {
+
+    const recipes = await recipeModel.find({
+        userId: userId,
+    });
+
+    for(let recipe of recipes) {
+        await recipeModel.deleteOne({
+            _id: recipe._id,
+        });
+        await userSavedRecipeModel.deleteMany({
+            recipe: recipe._id,
+        });
+    }
+
+    await userSavedRecipeModel.deleteMany({
+        user: userId,
+    });
+    
     const data = await userModel.deleteOne({
         _id: userId,
     });
@@ -187,20 +205,6 @@ const deleteUser = async (userId) => {
         _id: userId,
     });
 
-    const recipes = await recipeModel.find({
-        userId: userId,
-    });
-    recipes.forEach(recipe => {
-        recipeModel.deleteOne({
-            _id: recipe._id,
-        });
-        userSavedRecipeModel.deleteMany({
-            recipe: recipe._id,
-        });
-    });
-    userSavedRecipeModel.deleteMany({
-        user: userId,
-    });
     return data;
 }
 

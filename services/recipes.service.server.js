@@ -17,7 +17,7 @@ const fetchRandomRecipeApi = async () => {
         const allLocalRecipes = await recipeDao.findAllLocalRecipe();
         const finalRecipes = [
             ...convertRecipes(recipes.data.recipes),
-            allLocalRecipes
+            ...allLocalRecipes
         ];
         return finalRecipes;
 
@@ -83,12 +83,10 @@ const convertSpoonacularRecipe = (spoonacularRecipeDetails, recipeId) => {
         extendedIngredient => {
             ingredientString = `${ingredientString}${extendedIngredient.originalString}\n`
         });
-    console.log(ingredientString)
     const instructions = spoonacularRecipeDetails.instructions;
     //const instructions = spoonacularRecipeDetails.analyzedInstructions.steps.map(step => `${step}\n`)
-    console.log(instructions)
     const recipe = {
-        _id: recipeId,
+        _id: Number(recipeId),
         title: spoonacularRecipeDetails.title,
         ingredients: ingredientString,
         instructions: instructions,
@@ -97,6 +95,7 @@ const convertSpoonacularRecipe = (spoonacularRecipeDetails, recipeId) => {
         imageUrl: spoonacularRecipeDetails.image,
         sourceUrl: spoonacularRecipeDetails.sourceUrl
     }
+    console.log(recipe);
     return recipe
 }
 

@@ -90,23 +90,28 @@ module.exports = function (app) {
     });
 
 
-    app.get('api/recentRecipes/users/:userId', (req, res) => {
+    app.get('/api/recentRecipes/users/:userId', (req, res) => {
         const userId = req.params.userId;
         recipeService.getLatestRecipes(userId).then((data) => {
             if(data && !data.error) {
                 userSavedRecipe.findRecentSavedRecipe(userId).then((savedRecipes) => {
                     let recipes = [];
+                    let uniqueRecipes;
                     if(savedRecipes && !savedRecipes.error) {
                         recipes = [
                             ...data,
                             ...savedRecipes
                         ];
+                        uniqueRecipes = Array.from(new Set(recipes.map(recipe => recipe._id.toString())))
+                                                .map(_id => { 
+                                                    return recipes.find(recipe => recipe._id.toString() === _id) 
+                                                });
                     } else {
-                        recipes = [
+                        uniqueRecipes = [
                             ...data,
                         ]
                     }
-                    res.json(recipes);
+                    res.json(uniqueRecipes);
                 }).catch((err) => {
                     res.json(data);
                 })
@@ -148,6 +153,7 @@ module.exports = function (app) {
                 });
             });
         })
-    })
+    });
+    
 }
 
