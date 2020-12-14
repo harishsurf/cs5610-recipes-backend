@@ -20,7 +20,7 @@ app.use(function (req, res, next) {
 const atlasConnection = 'mongodb+srv://admin:admin@recipes-mongodb.rafj8.mongodb.net/recipes?retryWrites=true&w=majority';
 const localhost = 'mongodb://localhost:27017/recipes';
 
-mongoose.connect(localhost, {
+mongoose.connect(atlasConnection, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true
