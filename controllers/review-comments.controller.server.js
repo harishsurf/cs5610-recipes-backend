@@ -1,6 +1,5 @@
 const reviewCommentsService = require('../services/review-comments.service.server');
 const recipeService = require('../services/recipes.service.server');
-const userService = require('../services/users.service.server');
 
 module.exports = function (app) {
 
@@ -13,11 +12,12 @@ module.exports = function (app) {
                     res.status(500).send(reviewArray);
                 } else {
                     console.log(reviewArray);
-                    reviewCommentsService.populateReviewComment(reviewArray)
-                        .then(arrayOfReviewObj => res.send(arrayOfReviewObj))
-                        .catch(err => {
-                            res.status(500).send(err);
-                        })
+                    res.status(200).send(reviewArray)
+                    // reviewCommentsService.populateReviewComment(reviewArray)
+                    //     .then(arrayOfReviewObj => res.send(arrayOfReviewObj))
+                    //     .catch(err => {
+                    //         res.status(500).send(err);
+                    //     })
                 }
             })
             .catch(err => {
@@ -42,4 +42,13 @@ module.exports = function (app) {
             res.status(500).send(err);
         })
     });
+
+    app.delete('/api/recipes/:recipeId/reviewComments/:reviewId', (req, res) => {
+        const recipeId = req.params.recipeId;
+        const reviewId = req.params.reviewId;
+
+        recipeService.deleteReviewComments(recipeId, reviewId)
+            .then((msg)=> res.send({msg}))
+            .catch(err => res.send({err}));
+    })
 }

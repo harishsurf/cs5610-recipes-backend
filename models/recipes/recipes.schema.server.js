@@ -10,7 +10,8 @@ const recipeSchema = new mongoose.Schema({
     imageUrl: String,
     userId: {type: mongoose.Schema.Types.ObjectId, ref: 'UserModel'},
     id: Number,
-    reviewComments : {type: Array, ref: 'ReviewCommentsModel'}
+    // reviewComments : {type: Array[mongoose.Schema.Types.ObjectId], default: [],  ref: 'ReviewCommentsModel'}
+    reviewComments : [{ type : mongoose.Schema.Types.ObjectId, ref: 'ReviewCommentsModel' }],
 }, {collection: 'recipes', timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }});
 
 module.exports = recipeSchema;

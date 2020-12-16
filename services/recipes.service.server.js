@@ -1,6 +1,6 @@
 const recipeDao = require('../daos/recipes.dao.server');
 const axios = require('axios');
-const apiKey = "54a4329446b941c4a1e48206f0703ae4"
+const apiKey = "2adc12501b804b15813d1b0278c80ffd"
 const baseUrl = "https://api.spoonacular.com/recipes";
 
 const addRecipe = (userId, recipe) => {
@@ -123,6 +123,10 @@ const updateReviewComments = (recipeId, reviewCommentObj) => {
     return recipeDao.updateReviewComments(recipeId, reviewCommentObj);
 }
 
+const deleteReviewComments = (recipeId, reviewCommentId) => {
+    return recipeDao.deleteReviewComments(recipeId, reviewCommentId);
+}
+
 module.exports = {
     addRecipe,
     fetchRandomRecipeApi,
@@ -133,4 +137,5 @@ module.exports = {
     getLatestRecipes,
     findReviewCommentsForRecipe,
     updateReviewComments,
+    deleteReviewComments
 };
